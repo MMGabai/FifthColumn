@@ -1,0 +1,159 @@
+This must be in before relase of Alpha 0.25
+
+-Multiple weapons, cycling (yes)
+ * Cycling, multiple weapons (yes)
+ * Throw grenades (yes)
+ * Deal damage (yes)
+ * Holstering (yes)
+ * FOV decrease with Iron Sights (yes)
+ * Iron sights animation (yes)
+ * Ammo management (yes)
+-UI
+ * In-game Menu (yes)
+ * Main Menu (yes)
+ * Health bar (partially, there is health indication)
+-Inventory System (yes)
+ * Gunslots (yes)
+ * Non-Weapon Items (yes)
+ * Inventory management (yes)
+ * Pickups (yes)
+-NPC's
+ * Enemies (yes)
+ * Talkable characters & dialogue system (yes)
+-Skill system
+ * Skills (partially)
+ * Skill manager (yes)
+-Quest system
+ * Basic quest class (yes)
+ * Quest parameters (yes)
+ * Quests (yes)
+ * Quest manager (yes)
+
+This things must be in before Beta
+
+Polishing phase issues
+- AI (no) - 0.7
+ * Attacks hostiles (yes)
+ * Moves to hostiles (no) - 0.7
+ * Identifies hostiles (yes)
+ * Changing Faction disposition (yes)
+ * AI states - i.e. patrol, attack (yes)
+ * Aiming offset (yes)
+ * Group AI (no) - 0.7
+ * Make the AI stop for a conversation (no) - 0.7
+ * Keyring (no) - 0.7
+ * Stealth mechanics (no)
+   * Hearing mechanics (yes)
+   * Viewing cone (yes)
+   * Trespassing mechanics (yes) - 0.4
+   * Alarm mechanics (no) - 0.7
+ * Patrol with multiple patrolpoints (yes)
+- Rework Inventory System (yes)
+ * Make Inventory Items more similar to Weapons code wise (yes)
+ * Make Weapons count as inventory items that get unholstered upon being used (yes)
+- Draggable Items (no) - 0.5
+- Sabotage system (no) - 0.5
+- Revamping the Skills system (yes) - 0.5
+- World State (yes) - 0.4
+ * Remember blocked out dialogue options (yes)
+ * Remember current world variables (yes)
+   * Faction rating (yes)
+- Adding an options menu (no) - 0.5
+ * Graphics options (no)
+  * Aspect Ratio (no)
+  * Resolution (yes)
+  * FullScreen/Windowed (yes)
+  * VSync (yes)
+  * Gamma (yes)
+  * Textures (yes)
+  * View Distance (yes)
+  * FX (yes)
+  * Shadows (yes)
+  * Post-Processing (yes)
+  * AA (yes)
+ * Keyboard binding (no)
+  * Forwards
+  * Backwards
+  * Left
+  * Right
+  * Jump
+  * Crouch
+  * Journal
+  * Next Item
+  * Previous Item
+  * Switch Weapon
+  * Melee
+  * Fire
+  * Hard Aim
+ * Audio menu (no)
+  * Master Volume (no)
+  * Music Volume (no)
+  * Gunshot Volume (no)
+  * Misc FX Volume (no)
+  * UI Sounds (no)
+ * General gameplay options (no)
+  * bInvertedYAxis (no)
+  * bInvertedXAxis (no)
+  * Aim Sensitivity (no)
+  * Base FOV (no)
+- Third person animations (Yes)
+- Loading screens (yes)
+- Headshot one-shot one-kill (no) - 0.0.5
+- Optional Crosshair (no) - 0.1.0
+- Make UI gamepad controllable (no) - 0.5
+ * Journal (no)
+   * General journal screen (yes)
+   * Skills (yes)
+   * Mission (yes)
+ * Dialogue (yes)
+ * Game over
+ * Main menu
+- Fix First Person Animations (no)
+ * Weapon Recoil shake (yes)
+ * Arms Animations (yes)
+   * Reloading (yes)
+   * Firing (yes)
+   * Equipping (yes)
+   * Unequipping (yes)
+ * Weapon Animations (no)
+   * Walther PPK (yes)
+   * Browning Hi-Power (yes)
+   * StG 44 (yes)
+   * Sterling (yes)
+   * Gewehr 43 (no)
+- Load/Save Game (no) - 0.9
+- Different game modes (no) - 0.7
+ * Fifth Column mode (yes)
+ * Story mode (no)
+ * Tony Montana mode (no)
+ * Ultraviolence mode (no)
+ * Undercover mode (no)
+- Gas grenades (no) - 0.7
+- Prevent sticking weapons into walls (no) - 0.7
+- Overhaul of the inventory pickup system (yes)
+- Adjusting the camera (no) - Alpha 0.7
+ * Account for changes in screen ratio (no)
+ * Camera falls if player dies (no)
+- Money (no) - 0.7
+- Upgrade weapons (no) - 0.7
+- Notifications (yes)
+- Variable impact effects (yes)
+- Blood effects (yes)
+- Poster system (yes)
+- The Elder Scrolls style headsup text to show which item you are about to pick up (yes)
+- Falling damage (yes)
+- Ammo box (yes)
+- Withdrawal effects (yes)
+- Book system (yes)
+- Melee system (yes)
+- Landmines (yes)
+
+Known issues
+ * Weapons occasionally fall through the ground
+ * No weapon is equipped after a weapon pickup, though changing weapons fixes this [fixed]
+ * Quests can be completed before they are started
+ * Dialogues cannot be opened when opened before - this seems to be introduced by a recent change [fixed]
+ * Reload animations do not play if performed too soon after another one - maybe introduce a delay?
+ * Simulate always crashes [fixed]
+ * Switching weapons using the mouse wheel while crouched causes the player to uncrouch  [fixed]
+ * The Brownings Hi-Power's muzzle flash may continue

@@ -1,0 +1,9 @@
+Current code smells that may need attention
+
+Lazy Classes:
+* Book (deleted - done, functionality moved to ActivatableObject)
+* Poster (deleted - done, functionality moved to ActivatableObject)
+* FCPlayerController (expand - done)
+Duplicates:
+* FCWeapon & ActivatableObject have many common methods
+ - Solution: Create FCItem as common parent class (done)
