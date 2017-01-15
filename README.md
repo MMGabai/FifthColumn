@@ -36,12 +36,21 @@ going lost, as there isn't active development as of september 19 2016.
 1. Download the code and extract it into, or do a source control checkout on,
 an empty folder on your computer like C:\Choose\Your\Path\FifthColumn
 2. Install Unreal Engine 4.9
-3. Download the archive containing Fifth Column's assets. These files can be found on 
-http://37.97.222.130/fifthcolumn_assets_0052.tar.gz 
-Extract the folder named content into "C:\Choose\Your\Path\FifthColumn"
-4. Make sure you have a compiler ready to handle C++ code. For Windows
+3. Download the archives containing Fifth Column's assets. These files can be found on 
+https://drive.google.com/open?id=0Bzqqt4NHhXKMWlIzcG54eHJlaXM
+Open up Content.zip and extract its contents into 
+the folder named content into "C:\Choose\Your\Path\FifthColumn"
+4. Make sure you have a compiler ready to handle C++ code. For this, Windows
 Visual Studio 2013 is recommended.
-5. Click FifthColumn.uproject to launch
+5. Click FifthColumn.uproject to launch (be prepared to wait some time!)
+
+===========================
+Fifth Column - Contact
+===========================
+
+Buy me a beer and help this project return to strength!
+Paypal: fifthcolumngame@gmail.com
+bitcoin:3QZJZXfgWfpB4MzrJfKDCLVPujtdw3noKL
 
 Any problems or suggestions can be mailed to
 fifthcolumngame@gmail.com
@@ -50,8 +59,8 @@ Enjoy!
 
 -Mordechai M. Gabai
 
-October 14th 2016
+January 15th 2016
 
 Other notes:
 
-* It hasn't been tested on Mac or Linux, yet - you are invited to change that as you please!
+* It hasn't been tested on Mac or Linux, yet - you are invited to try out as you please!
