@@ -20,7 +20,7 @@ class FIFTHCOLUMN_API ANPC : public AFCCharacter
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		int32 GetDialogueLevel() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = Dialogue)
+	UPROPERTY(EditAnywhere, Category = Dialogue)
 		TSubclassOf<class ADialogue> StartingDialogue;
 
 	//Check if pawn is enemy if given controller
