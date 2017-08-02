@@ -1,5 +1,3 @@
-This must be in before relase of Alpha 0.25
-
 -Multiple weapons, cycling (yes)
  * Cycling, multiple weapons (yes)
  * Throw grenades (yes)
@@ -20,6 +18,7 @@ This must be in before relase of Alpha 0.25
 -NPC's
  * Enemies (yes)
  * Talkable characters & dialogue system (yes)
+ * Changing starting dialogue (no)
 -Skill system
  * Skills (partially)
  * Skill manager (yes)
@@ -28,11 +27,7 @@ This must be in before relase of Alpha 0.25
  * Quest parameters (yes)
  * Quests (yes)
  * Quest manager (yes)
-
-This things must be in before Beta
-
-Polishing phase issues
-- AI (no) - 0.7
+- AI (not complete) - 0.7
  * Attacks hostiles (yes)
  * Moves to hostiles (no) - 0.7
  * Identifies hostiles (yes)
@@ -52,7 +47,7 @@ Polishing phase issues
  * Make Inventory Items more similar to Weapons code wise (yes)
  * Make Weapons count as inventory items that get unholstered upon being used (yes)
 - Draggable Items (no) - 0.5
-- Sabotage system (no) - 0.5
+- Sabotage system (yes) - 0.5
 - Revamping the Skills system (yes) - 0.5
 - World State (yes) - 0.4
  * Remember blocked out dialogue options (yes)

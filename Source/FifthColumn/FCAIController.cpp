@@ -258,6 +258,7 @@ void AFCAIController::ShootEnemy()
 	CurrentState = AIState::Engaged;
 	MarkInterest(Enemy);
 
+	//TODO: Make sure it shoots within line of sight
 	if (Enemy == GetTarget() && Enemy->IsAlive())
 	{
 		//TODO: Check for Friendly Fire

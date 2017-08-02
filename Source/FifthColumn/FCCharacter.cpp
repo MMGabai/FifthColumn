@@ -355,6 +355,11 @@ bool AFCCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent, ACo
 	return true;
 }
 
+void AFCCharacter::KillInstantly()
+{
+
+}
+
 void AFCCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
 {
 	OnDying();

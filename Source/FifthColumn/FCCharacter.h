@@ -464,7 +464,8 @@ protected:
 public:
 
 	//notification when killed
-	virtual void OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* InstigatingPawn, class AActor* DamageCauser);
+	UFUNCTION(BlueprintCallable, Category = Health)
+		virtual void OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* InstigatingPawn, class AActor* DamageCauser);
 
 	//check if pawn is in its dying state
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Health)
@@ -519,7 +520,12 @@ public:
 	virtual bool CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const;
 
 	//Kills pawn
-	virtual bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
+	UFUNCTION(BlueprintCallable, Category = Health)
+		virtual bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
+
+	//direct death, useful for events
+	UFUNCTION(BlueprintCallable, Category = Health)
+		virtual void KillInstantly();
 
 	// Die when we fall out of the world.
 	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
