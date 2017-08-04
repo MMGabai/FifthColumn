@@ -33,6 +33,11 @@ bool ANPC::GetHostileToPlayer() const
 	return bIsHostileToPlayer;
 }
 
+void ANPC::SetStartingDialogue(ADialogue* NewStartingDialogue)
+{
+
+}
+
 void ANPC::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
 {
 	Super::OnDeath(KillingDamage, DamageEvent, PawnInstigator, DamageCauser);

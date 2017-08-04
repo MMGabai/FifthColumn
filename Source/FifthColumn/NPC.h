@@ -20,6 +20,9 @@ class FIFTHCOLUMN_API ANPC : public AFCCharacter
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		int32 GetDialogueLevel() const;
 
+	UFUNCTION(BlueprintCallable, Category = Behavior)
+		void SetStartingDialogue(ADialogue* NewStartingDialogue);
+
 	UPROPERTY(EditAnywhere, Category = Dialogue)
 		TSubclassOf<class ADialogue> StartingDialogue;
 

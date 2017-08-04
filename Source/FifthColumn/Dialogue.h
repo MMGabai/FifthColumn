@@ -89,6 +89,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")
 		bool bIsSpeechCheck;
 
+	//new starting dialogue
+	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")
+		bool bNewStartingDialogue;
+
 	//The name of the dialogue (will be shown if the dialogue can be selected)
 	//the name by which to identify the quest
 	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")

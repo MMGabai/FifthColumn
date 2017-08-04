@@ -26,7 +26,7 @@ class FIFTHCOLUMN_API AFCAIController : public AAIController
 
 	//set next patrol point
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void NextPatrolPoint();
+		void NextPatrolPoint();
 
 	//get blackboard variables
 	UFUNCTION(BlueprintCallable, Category = Behavior)
@@ -37,17 +37,17 @@ class FIFTHCOLUMN_API AFCAIController : public AAIController
 
 	//listen to sounds
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void ListenToDisturbances();
+		void ListenToDisturbances();
 
 	//look for characters
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void LookForCharacters();
+		void LookForCharacters();
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void FindPointNearTarget();
+		void FindPointNearTarget();
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void HoldPosition();
+		void HoldPosition();
 
 	//mark interest
 	void MarkInterest(class AActor* InActor);
@@ -57,30 +57,30 @@ class FIFTHCOLUMN_API AFCAIController : public AAIController
 
 	//shoot at enemy
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void ShootEnemy();
+		void ShootEnemy();
 
 	//alert friendlies
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void AlertFriendlies();
+		void AlertFriendlies();
 
 	//patrols
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void Patrol();
+		void Patrol();
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void SetPatrolPointLocations();
+		void SetPatrolPointLocations();
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual bool IsPatrolling() const;
+		bool IsPatrolling() const;
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual bool IsEngagingEnemy() const;
+		bool IsEngagingEnemy() const;
 	
 	//flee
 
 	//switch weapon
 	UFUNCTION(BlueprintCallable, Category = Behavior)
-		virtual void SwitchWeapon();
+		void SwitchWeapon();
 
 protected:
 

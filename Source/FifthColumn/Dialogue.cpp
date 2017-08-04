@@ -12,6 +12,7 @@ ADialogue::ADialogue(const FObjectInitializer& ObjectInitializer) : Super(Object
 	bDialogueTreeOption = false;
 	bOneTimeOnly = false;
 	bIsSpeechCheck = false;
+	bNewStartingDialogue = false;
 	DialogueOptions.AddZeroed(5);
 }
 

@@ -74,7 +74,7 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	Inventory.AddZeroed(2);
+	//Inventory.AddZeroed(2);
 
 	//skill related stuff
 	iMaxEncumbranceLimit = 4;
@@ -355,11 +355,6 @@ bool AFCCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent, ACo
 	return true;
 }
 
-void AFCCharacter::KillInstantly()
-{
-
-}
-
 void AFCCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
 {
 	OnDying();
@@ -502,14 +497,18 @@ bool AFCCharacter::GetHasWeaponsHolstered() const
 
 void AFCCharacter::SpawnDefaultInventory() 
 {
-	AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultGunSlot));
-	AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultPistolSlot));
+	if (DefaultGunSlot)
+		AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultGunSlot));
+
+	if (DefaultPistolSlot)
+		AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultPistolSlot));
 
 	for (int32 i = 0; i < DefaultInventoryObjects.Num(); i++)
 		AddWeapon(GetWorld()->SpawnActor<AInventoryItem>(DefaultInventoryObjects[i]));
 
 	// equip first weapon in inventory
-	EquipWeapon(Inventory[0]);
+	if (Inventory.Num() > 0)
+		EquipWeapon(Inventory[0]);
 }
 
 void AFCCharacter::DestroyInventory()
@@ -525,22 +524,48 @@ bool AFCCharacter::AddWeapon(AFCWeapon* Weapon)
 		AFCWeapon* TargetSlot = NULL;
 		bool bReplaceWeapon = false;
 		int32 WeaponType = Weapon->GetWeaponType();
+		FString AbstractName = Weapon->GetAbstractName();
 
 		Weapon->OnEnterInventory(this);
 
 		//Set Target Slot
-		if (Inventory[0] && WeaponType == 1 && PistolSkill >= 3 || WeaponType == 0)
+		if (WeaponType == 1 && PistolSkill >= 3 || WeaponType == 0)
+		{
+			if (Inventory.Num() < 1)
+				Inventory.AddZeroed(1);
 			TargetSlot = Inventory[0];
-		else if (Inventory[1] && WeaponType != 4)
+		}
+		else if (WeaponType != 4)
+		{
+			if (Inventory.Num() < 2)
+				Inventory.AddZeroed(2);
 			TargetSlot = Inventory[1];
+		}
+		else if (WeaponType == 4)
+		{
+			if (Inventory.Num() < 3)
+				Inventory.AddZeroed(3 - Inventory.Num());
+			else
+			{
+				for (int32 i = 2; i < Inventory.Num(); i++)
+				{
+					if (Inventory[i] && AbstractName == Inventory[i]->GetAbstractName())
+					{
+						TargetSlot = Inventory[i];
+						break;
+					}
+				}
+			}
+		}
+
 
 		if (TargetSlot) 
 		{
-			if (TargetSlot->GetAbstractName() == Weapon->GetAbstractName()) 
+			if (TargetSlot->GetAbstractName() == AbstractName)
 			{
 				bReplaceWeapon = false;
 
-				if (TargetSlot->GetCurrentAmmo() < TargetSlot->GetMaxAmmo()) 
+				if (TargetSlot->GetCurrentAmmo() < TargetSlot->GetMaxAmmo())
 				{
 					TargetSlot->GiveAmmo(Weapon->GetCurrentAmmo());
 					Weapon->Destroy();
@@ -568,7 +593,7 @@ bool AFCCharacter::AddWeapon(AFCWeapon* Weapon)
 		}
 		else if (WeaponType != 4) 
 		{
-			ToggleHolster();
+			&AFCPlayerCharacter::ToggleHolster;
 
 			Inventory[1] = TargetSlot;
 
@@ -681,22 +706,6 @@ void AFCCharacter::UnEquipWeapon()
 }
 
 //Holstering
-void AFCCharacter::ToggleHolster()
-{
-	if (!bHasWeaponsHolstered && CurrentWeapon) //holster weapons
-	{
-		CurrentWeapon->OnUnEquip();
-		RemoveWeapon(Inventory[1]);
-		bHasWeaponsHolstered = true; //set Player status
-		GetWorldTimerManager().SetTimer(HolsterHandle, this, &AFCPlayerCharacter::Holster, 0.5f, false);
-	}
-	else if (!bIsInDialogue) //unholster weapons
-	{
-		bHasWeaponsHolstered = false;
-		CurrentWeapon == Inventory[0] || CurrentWeapon == Inventory[1] ? EquipWeapon(CurrentWeapon) : EquipWeapon(Inventory[0]);
-	}
-}
-
 void AFCCharacter::Holster()
 {
 	Mesh1P->SetHiddenInGame(true);
@@ -733,39 +742,6 @@ void AFCCharacter::StopWeaponFire()
 	{
 		bWantsToFire = false;
 		CurrentWeapon ? CurrentWeapon->StopFire() : NULL;
-	}
-}
-
-void AFCCharacter::Melee() 
-{
-	if (!bIsInDialogue) 
-	{
-		if (bHasWeaponsHolstered)
-			ToggleHolster();
-
-		KnifeAnimationDuration = KnifeAnimation->SequenceLength;
-
-		TArray<AActor*> ActorsTouched;
-
-		if (IsAlive()) 
-		{
-			GetOverlappingActors(ActorsTouched);
-
-			for (int32 i = 0; i < ActorsTouched.Num(); i++) 
-			{
-				if (Cast<AFCCharacter>(ActorsTouched[i]) && Cast<AFCCharacter>(ActorsTouched[i])->IsAlive())
-				{
-					bIsPerformingMelee = true;
-					MeleeTarget = Cast<AFCCharacter>(ActorsTouched[i]);
-				}
-			}
-
-			if (MeleeTarget) 
-			{
-				GetWorldTimerManager().SetTimer(StabHandle, this, &AFCCharacter::Stab, KnifeAnimationDuration / 2, false);
-				GetWorldTimerManager().SetTimer(EndStabHandle, this, &AFCCharacter::EndStab, KnifeAnimationDuration, false);
-			}
-		}
 	}
 }
 
@@ -934,14 +910,12 @@ void AFCCharacter::OnStartFire()
 			SetRunning(false, false);
 		StartWeaponFire();
 	}
-	else if (CurrentWeapon->GetWeaponType() == 4)
+	else if (CurrentWeapon && CurrentWeapon->GetWeaponType() == 4)
 	{
 		if (IsRunning())
 			SetRunning(false, false);
 		StartWeaponFire();
 	}
-	else
-		ToggleHolster();
 }
 
 void AFCCharacter::OnStopFire() 

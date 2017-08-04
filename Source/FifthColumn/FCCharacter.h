@@ -89,7 +89,6 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 	void StopWeaponFire();
 
 	//All the melee stuff
-	void Melee();
 	void Stab();
 	void EndStab();
 
@@ -324,7 +323,6 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 
 	//INPUT
 	//alternate between holstering weapons
-	void ToggleHolster();
 	void Holster();
 
 	FTimerHandle HolsterHandle;
@@ -522,10 +520,6 @@ public:
 	//Kills pawn
 	UFUNCTION(BlueprintCallable, Category = Health)
 		virtual bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
-
-	//direct death, useful for events
-	UFUNCTION(BlueprintCallable, Category = Health)
-		virtual void KillInstantly();
 
 	// Die when we fall out of the world.
 	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;

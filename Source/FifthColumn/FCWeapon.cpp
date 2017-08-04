@@ -263,14 +263,19 @@ void AFCWeapon::StartReload(bool bFromReplication)
 	{
 		bPendingReload = true;
 		DetermineWeaponState();
-		float AnimDuration = ReloadAnim->SequenceLength;
+		if (ReloadAnim)
+		{
+			float AnimDuration = ReloadAnim->SequenceLength;
 
-		if (AnimDuration <= 0.0f)
-			AnimDuration = WeaponConfig.NoAnimReloadDuration;
+			if (AnimDuration <= 0.0f)
+				AnimDuration = WeaponConfig.NoAnimReloadDuration;
 
-		GetWorldTimerManager().SetTimer(StopReloadHandle, this, &AFCWeapon::StopReload, AnimDuration, false);
-		if (Role == ROLE_Authority)
-			GetWorldTimerManager().SetTimer(ReloadWeaponHandle, this, &AFCWeapon::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
+			GetWorldTimerManager().SetTimer(StopReloadHandle, this, &AFCWeapon::StopReload, AnimDuration, false);
+			if (Role == ROLE_Authority)
+				GetWorldTimerManager().SetTimer(ReloadWeaponHandle, this, &AFCWeapon::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
+		}
+		else
+			StopReload();
 		
 		if (MyPawn && MyPawn->IsLocallyControlled())
 			PlayWeaponSound(ReloadSound);
