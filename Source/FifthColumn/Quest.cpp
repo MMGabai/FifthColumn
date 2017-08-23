@@ -42,7 +42,7 @@ void AQuest::QuestStarted(AFCPlayerCharacter* Player)
 	}
 
 	if (StartSound)
-		UGameplayStatics::PlaySoundAttached(StartSound, GetRootComponent());
+		UGameplayStatics::SpawnSoundAttached(StartSound, GetRootComponent());
 }
 
 void AQuest::QuestFinished(AFCPlayerCharacter* Player) 
@@ -50,7 +50,7 @@ void AQuest::QuestFinished(AFCPlayerCharacter* Player)
 	if (!bQuestComplete)
 	{
 		if (FinishSound)
-			UGameplayStatics::PlaySoundAttached(FinishSound, GetRootComponent());
+			UGameplayStatics::SpawnSoundAttached(FinishSound, GetRootComponent());
 
 		Player->AddXP(XPtoAddOnCompletion);
 		Player->ActiveQuests.Remove(this);
@@ -66,5 +66,5 @@ void AQuest::QuestFailed(AFCPlayerCharacter* Player)
 	Player->SelectNextQuest();
 
 	if (FailSound)
-		UGameplayStatics::PlaySoundAttached(FailSound, GetRootComponent());
+		UGameplayStatics::SpawnSoundAttached(FailSound, GetRootComponent());
 }

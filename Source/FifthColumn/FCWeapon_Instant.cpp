@@ -161,7 +161,10 @@ void AFCWeapon_Instant::SpawnImpactEffects(const FHitResult& Impact)
 			UseImpact = Hit;
 		}
 
-		AImpactEffect* EffectActor = GetWorld()->SpawnActorDeferred<AImpactEffect>(ImpactTemplate, Impact.ImpactPoint, Impact.ImpactNormal.Rotation());
+		FTransform Transform = FTransform(Impact.ImpactPoint);
+		ESpawnActorCollisionHandlingMethod CollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::Undefined;
+		AImpactEffect* EffectActor = GetWorld()->SpawnActorDeferred<AImpactEffect>(ImpactTemplate, Transform, GetOwner(), GetInstigator(), CollisionHandlingOverride); //SpawnActorDeferred<AImpactEffect>(ImpactTemplate, Impact.ImpactPoint, Impact.ImpactNormal.Rotation());
+
 		if (EffectActor)
 		{
 			EffectActor->SurfaceHit = UseImpact;

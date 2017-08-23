@@ -20,13 +20,11 @@ AFifthColumnProjectile::AFifthColumnProjectile(const FObjectInitializer& ObjectI
 	ProjectileMovement->bShouldBounce = false;
 
 	InitialLifeSpan = 3.0f;
-
-	StopAtActors = true;
 }
 
 void AFifthColumnProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (StopAtActors && (OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 		Destroy();

@@ -12,7 +12,7 @@ class FIFTHCOLUMN_API ADialogue : public AActor
 	GENERATED_UCLASS_BODY()
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-	FText GetDialogueName() const;
+		FText GetDialogueName() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 		FString GetAbstractDialogueName() const;
@@ -45,10 +45,10 @@ class FIFTHCOLUMN_API ADialogue : public AActor
 
 	//dialogue related events
 	UFUNCTION(BlueprintImplementableEvent)
-		virtual void DialogueEvent();
+		void DialogueEvent();
 
 	UFUNCTION(BlueprintImplementableEvent)
-		virtual void DialogueFailEvent();
+		void DialogueFailEvent();
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 		void NotifyDialogueFailure();
@@ -84,6 +84,10 @@ protected:
 	//fires only one time
 	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")
 		bool bOneTimeOnly;
+
+	//if true, one time only fails are valid throughout the session rather than just applicable to character
+	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")
+		bool bGlobalFail;
 
 	//speech check
 	UPROPERTY(EditDefaultsOnly, Category = "Dialogue")

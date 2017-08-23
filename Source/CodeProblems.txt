@@ -1,9 +1,15 @@
 Current code smells that may need attention
 
 Lazy Classes:
-* Book (deleted - done, functionality moved to ActivatableObject)
-* Poster (deleted - done, functionality moved to ActivatableObject)
-* FCPlayerController (expand - done)
+* Book (deleted - done, functionality moved to ActivatableObject, class abolished)
+* Poster (deleted - done, functionality moved to ActivatableObject, class abolished)
+* FCPlayerController (move all functionality to FCPlayerCharacter, then abolish this class)
+* FCInventoryItem (move all functionality to AFCWeapon, then abolish this class)
+* FCHUD (move all functionality to AFCPlayerCharacter, then abolish this class)
+* DisturbanceSource (built-in Noise emitter should do the trick)
+Blueprint hell:
+* Make sure Widget variables are readily available from the C++ code
+* Abolish the Knightley blueprint, place all functionality in player character
 Duplicates:
 * FCWeapon & ActivatableObject have many common methods
  - Solution: Create FCItem as common parent class (done)

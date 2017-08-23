@@ -261,10 +261,12 @@ void AFCAIController::ShootEnemy()
 	//TODO: Make sure it shoots within line of sight
 	if (Enemy == GetTarget() && Enemy->IsAlive())
 	{
-		//TODO: Check for Friendly Fire
-		MyBot->StartWeaponFire();
 
 		//TODO: Make sure it fires in salvos
+		//TODO: Check for Friendly Fire
+		MyBot->StartWeaponFire();
+		//Delay 
+		//STOPWEAPONFIRE
 	}
 	else 
 	{
@@ -333,6 +335,6 @@ void AFCAIController::SwitchWeapon()
 	ANPC* Character = Cast<ANPC>(GetPawn());
 
 	//Grab service rifle
-	if (Character->Inventory[1] && Character->GetCurrentWeapon() != Character->Inventory[1])
+	//if (Character->Inventory[1] && Character->GetCurrentWeapon() != Character->Inventory[1])
 		Character->ChangeWeapon();
 }

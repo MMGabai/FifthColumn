@@ -217,7 +217,7 @@ class FIFTHCOLUMN_API AFCWeapon : public AFCObject
 
 	///Handle Pickup Stuff
 	//to fire when picked up
-	virtual void PickupOnTouch(class AFCCharacter* Pawn);
+	virtual void PickupOnTouch(class AFCPlayerCharacter* Pawn);
 
 	//the weapon as seen in the player hands
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
@@ -271,7 +271,7 @@ protected:
 
 	//blueprint event: pickup disappears
 	UFUNCTION(BlueprintImplementableEvent)
-		virtual void OnPickedUpEvent();
+		void OnPickedUpEvent();
 
 	UFUNCTION()
 		void OnRep_IsActive();

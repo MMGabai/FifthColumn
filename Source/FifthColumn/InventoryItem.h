@@ -26,7 +26,7 @@ public:
 
 	//activate item, weapons should be automatically activated
 	UFUNCTION(BlueprintImplementableEvent)
-		virtual void OnActivatedEvent();
+		void OnActivatedEvent();
 
 protected:
 

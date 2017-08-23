@@ -14,13 +14,14 @@ AFCWeapon::AFCWeapon(const FObjectInitializer& ObjectInitializer) : Super(Object
 	Mesh1P->bReceivesDecals = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->bOnlyOwnerSee = true;
-	Mesh1P->SetCollisionObjectType(ECC_WorldDynamic);
-	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh1P->SetCollisionObjectType(ECC_Pawn);
+	Mesh1P->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	Mesh1P->SetCollisionResponseToAllChannels(ECR_Block);
+	Mesh1P->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	Mesh1P->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-	Mesh1P->AttachParent = CollisionComp;
+	Mesh1P->AttachParent = Mesh3P;
 
-	Mesh3P->AttachParent = Mesh1P;
+	//Mesh3P->AttachParent = Mesh1P;
 
 	WeaponCameraSettings = FVector(0.0f, 0.0f, 9.0f);
 	IronSightWeaponCameraSettings = FVector(0.0f, 0.0f, 9.0f);
@@ -72,7 +73,7 @@ void AFCWeapon::Destroyed()
 
 void AFCWeapon::SetLocation(const FVector LocationReceived)
 {
-	CollisionComp->SetWorldLocation(LocationReceived);
+	//CollisionComp->SetWorldLocation(LocationReceived);
 	Mesh1P->SetWorldLocation(LocationReceived);
 	Mesh3P->SetWorldLocation(LocationReceived);
 	Super::SetActorLocation(LocationReceived);
@@ -84,12 +85,12 @@ void AFCWeapon::SpawnPickup()
 	TArray<AActor*> OverlappingPawns;
 }
 
-void AFCWeapon::PickupOnTouch(class AFCCharacter* Pawn)
+void AFCWeapon::PickupOnTouch(class AFCPlayerCharacter* Pawn)
 {
 	if (bIsActive == true)
 	{
 		if (PickupSound)
-			UGameplayStatics::PlaySoundAttached(PickupSound, GetRootComponent());
+			UGameplayStatics::SpawnSoundAttached(PickupSound, GetRootComponent());
 
 		if (Pawn->AddWeapon(this))
 		{
@@ -103,7 +104,7 @@ void AFCWeapon::PickupOnTouch(class AFCCharacter* Pawn)
 
 void AFCWeapon::OnPickedUp()
 {
-	CollisionComp->Deactivate();
+	//CollisionComp->Deactivate();
 	Mesh3P->Deactivate();
 	DetachMeshFromPawn();
 
@@ -205,14 +206,17 @@ void AFCWeapon::AttachMeshToPawn()
 		FName AttachPoint = MyPawn->GetWeaponAttachPoint();
 		if (MyPawn->IsLocallyControlled() == true)
 		{
-			USkeletalMeshComponent* PawnMesh1p = MyPawn->GetSpecifcPawnMesh(true);
-			USkeletalMeshComponent* PawnMesh3p = MyPawn->GetSpecifcPawnMesh(false);
+			USkeletalMeshComponent* PawnMesh1p;
+			AFCPlayerCharacter* Player = Cast<AFCPlayerCharacter>(MyPawn);
 
-			if (Mesh1P)
+			if (Player)
 			{
+				PawnMesh1p = Player->Mesh1P;
 				Mesh1P->SetHiddenInGame(false);
 				Mesh1P->AttachTo(PawnMesh1p, AttachPoint);
 			}
+
+			USkeletalMeshComponent* PawnMesh3p = MyPawn->GetMesh();
 
 			if (Mesh3P)
 			{
@@ -223,7 +227,7 @@ void AFCWeapon::AttachMeshToPawn()
 		else
 		{
 			USkeletalMeshComponent* UseWeaponMesh = GetWeaponMesh();
-			USkeletalMeshComponent* UsePawnMesh = MyPawn->GetPawnMesh();
+			USkeletalMeshComponent* UsePawnMesh = MyPawn->GetMesh();
 			UseWeaponMesh->AttachTo(UsePawnMesh, AttachPoint);
 			UseWeaponMesh->SetHiddenInGame(false);
 		}
@@ -473,7 +477,7 @@ UAudioComponent* AFCWeapon::PlayWeaponSound(USoundCue* Sound)
 {
 	UAudioComponent* AC = NULL;
 	if (Sound && MyPawn)
-		AC = UGameplayStatics::PlaySoundAttached(Sound, MyPawn->GetRootComponent());
+		AC = UGameplayStatics::SpawnSoundAttached(Sound, MyPawn->GetRootComponent());
 
 	return AC;
 }
@@ -762,7 +766,7 @@ void AFCWeapon::Tick(float DeltaSeconds)
 
 	if (!MyPawn) 
 	{
-		CollisionComp->SetWorldLocation(Mesh3P->GetComponentLocation());
+		//CollisionComp->SetWorldLocation(Mesh3P->GetComponentLocation());
 		Mesh3P->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 	else if (Mesh3P)

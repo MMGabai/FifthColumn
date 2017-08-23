@@ -12,10 +12,6 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 {
 	GENERATED_UCLASS_BODY()
 
-	//pawn mesh: 1st person view
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	USkeletalMeshComponent* Mesh1P;
-
 	//everything through the headshot box will become instant lethal upon hitting the character
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 		UBoxComponent* HeadshotBox;
@@ -65,21 +61,21 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 		bool CheckHolstering();
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-		bool GetShowWeaponHUD();
+	//UFUNCTION(BlueprintCallable, Category = "Inventory")
+	//	bool GetShowWeaponHUD();
 
 	//Add Weapon into inventory
 	UFUNCTION(BlueprintCallable, Category = "Game|Weapon")
-		bool AddWeapon(class AFCWeapon* Weapon);
+		virtual bool AddWeapon(class AFCWeapon* Weapon);
+
+	//equips weapon from inventory
+	virtual void EquipWeapon(class AFCWeapon* Weapon);
 
 	//remove weapon from inventory 
 	void RemoveWeapon(class AFCWeapon* Weapon);
 
 	//Find in inventory
 	class AFCWeapon* FindWeapon(TSubclassOf<class AFCWeapon> WeaponClass);
-
-	//equips weapon from inventory
-	void EquipWeapon(class AFCWeapon* Weapon);
 
 	//WEAPONS
 	//starts weapon fire
@@ -142,7 +138,7 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 	void ToggleCrouch(); 
 
 	//lobs a grenade
-	void ThrowGrenade();
+	//void ThrowGrenade();
 
 	//determines whether the character is looking for items to pickup or interactable characters
 	bool bIsPerformingMelee;
@@ -161,12 +157,6 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 
 	//switch between gun and pistol
 	void ChangeWeapon();
-
-	//next item
-	void NextItem();
-
-	//previous item
-	void PreviousItem();
 
 	//player pressed reload action
 	void OnReload();
@@ -191,7 +181,7 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 		virtual void SetHeadsupName(FText Input);
 
 	//get mesh
-	USkeletalMeshComponent* GetPawnMesh() const;
+	//USkeletalMeshComponent* GetPawnMesh() const;
 
 	//get currently equipped weapon
 	UFUNCTION(BlueprintCallable, Category="Game|Weapon")
@@ -273,19 +263,9 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 		int32 iMaxEncumbranceLimit;
 
-	//Get either first or third person mesh
-	FORCEINLINE USkeletalMeshComponent* GetSpecifcPawnMesh(bool WantFirstPerson) const { return WantFirstPerson == true ? Mesh1P : GetMesh(); };
-
 	/// WEAPONS
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		bool GetHasWeaponsHolstered() const;
-
-	//weapon slots, pistol slot is for portable weapons
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
-		TSubclassOf<AFCWeapon> DefaultPistolSlot;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
-		TSubclassOf<AFCWeapon> DefaultGunSlot;
 
 	//currently equipped weapon
 	UFUNCTION(BlueprintCallable, Category = Inventory)
@@ -301,30 +281,7 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 	UPROPERTY(Transient, ReplicatedUsing = OnRep_CurrentWeapon)
 		 class AFCWeapon* CurrentWeapon;
 
-	//grenades!
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-		TSubclassOf<class AFifthColumnProjectile> GrenadeClass;
-
-	//grenades carried by the player
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-		int32 GrenadesCarried;
-
-	//grenades carried by the player - for BP
-	UFUNCTION(BlueprintCallable, Category = Grenade)
-		int32 GetGrenadesCarried() const;
-
-	//grenades carried by the player - for BP
-	UFUNCTION(BlueprintCallable, Category = Grenade)
-		void SetGrenadesCarried(int32 iDesiredAmount);
-
-	//maximum amount of grenades that may be carried, also starting amount
-	UPROPERTY(EditDefaultsOnly, Category = Grenade)
-		int32 MaxAmountGrenades;
-
 	//INPUT
-	//alternate between holstering weapons
-	void Holster();
-
 	FTimerHandle HolsterHandle;
 
 protected:
@@ -374,7 +331,7 @@ protected:
 
 	//default inventory objects
 	UPROPERTY(EditAnywhere, Category = Inventory)
-		TArray<TSubclassOf<class AInventoryItem> > DefaultInventoryObjects;
+		TArray<TSubclassOf<class AFCWeapon> > DefaultInventoryObjects;
 
 	//speech skills
 	UPROPERTY(EditDefaultsOnly, Category = Skill)
@@ -397,18 +354,6 @@ protected:
 	//sabotage
 	UPROPERTY(EditDefaultsOnly, Category = Skill)
 		int32 SabotageSkill;
-
-	//pistol skills
-	UPROPERTY(EditDefaultsOnly, Category = Skill)
-		int32 PistolSkill;
-
-	//gun skills
-	UPROPERTY(EditDefaultsOnly, Category = Skill)
-		int32 AssaultSkill;
-
-	//gun skills
-	UPROPERTY(EditDefaultsOnly, Category = Skill)
-		int32 MarksmanSkill;
 
 	UPROPERTY(Transient, ReplicatedUsing=OnRep_LastTakeHitInfo)
 	struct FTakeHitInfo LastTakeHitInfo;
@@ -469,9 +414,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Health)
 	uint32 bIsDying:1;
 
-	//Blueprint event for when player dies
+	//Blueprint event for when character dies
 	UFUNCTION(BlueprintImplementableEvent)
-		virtual void OnDying();
+		void OnDying();
 
 	//Current health of the Pawn
 		float Health;
@@ -489,7 +434,7 @@ public:
 
 	//induce effects of drugs upon the player
 	UFUNCTION(BlueprintCallable, Category = Health)
-		virtual void InduceDrugEffects(bool DrugPlayer = true);
+		void ChangeModifiers();
 
 	UFUNCTION(BlueprintCallable, Category = Health)
 		float GetBaseTimeUntilWithdrawal() const;
@@ -511,6 +456,33 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		int32 GetMoney() const;
 
+//FACTIONS
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "World State")
+		virtual void Redistribute(int32 choice, int32 change);
+
+	UPROPERTY(EditAnywhere, Category = "World State")
+		float ArmenianFactionDisposition;
+
+	UPROPERTY(EditAnywhere, Category = "World State")
+		float AzerbaijaniFactionDisposition;
+
+	UPROPERTY(EditAnywhere, Category = "World State")
+		float SovietFactionDisposition;
+
+	UPROPERTY(EditAnywhere, Category = "World State")
+		float MercenaryFactionDisposition;
+
+	UPROPERTY(EditAnywhere, Category = "World State")
+		float SSFactionDisposition;
+
+	UFUNCTION(BlueprintCallable, Category = "World State")
+		virtual void SetDispositionTowardsCharacter(int32 choice, float change, bool redistribute = false);
+
+	UFUNCTION(BlueprintCallable, Category = "World State")
+		float GetDispositionTowardsCharacter(int32 choice) const;
+
 	//Kill this pawn
 	virtual void KilledBy(class APawn* EventInstigator);
 
@@ -526,8 +498,6 @@ public:
 
 	FTimerHandle StabHandle;
 	FTimerHandle EndStabHandle;
-
-	float HudRunoffTime;
 
 protected:
 

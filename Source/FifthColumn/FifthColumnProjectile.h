@@ -9,9 +9,6 @@ class FIFTHCOLUMN_API AFifthColumnProjectile : public AActor
 {
 	GENERATED_UCLASS_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
-		bool StopAtActors;
-
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
 		USphereComponent* CollisionComp;
 

@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2016, Mordechai Gabai
 
 #pragma once
 
@@ -11,6 +11,7 @@ ADialogue::ADialogue(const FObjectInitializer& ObjectInitializer) : Super(Object
 {
 	bDialogueTreeOption = false;
 	bOneTimeOnly = false;
+	bGlobalFail = false;
 	bIsSpeechCheck = false;
 	bNewStartingDialogue = false;
 	DialogueOptions.AddZeroed(5);
@@ -58,7 +59,7 @@ void ADialogue::UnloadDialogueOptions(bool EndDialogue)
 	else
 		j = 1;
 
-	for (int32 i = 0; i < LoadedDialogueOptions.Num(); i++)
+	for (int32 i = j; i < LoadedDialogueOptions.Num(); i++)
 		if (LoadedDialogueOptions[i] != NULL)
 			LoadedDialogueOptions[i]->Destroy();
 

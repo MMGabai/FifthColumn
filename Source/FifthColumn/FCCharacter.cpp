@@ -19,21 +19,7 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	bIsInDialogue = false;
 	CameraSettings = FVector(12.0f, 6.0f, 0.0f);
 
-	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("PawnMesh1P"));
-	Mesh1P->AttachParent = GetCapsuleComponent();
-	Mesh1P->bOnlyOwnerSee = true;
-	Mesh1P->bTreatAsBackgroundForOcclusion = true;
-	Mesh1P->bOwnerNoSee = false;
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->bReceivesDecals = true;
-	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
-	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-	Mesh1P->bChartDistanceFactor = false;
-	Mesh1P->SetCollisionObjectType(ECC_Pawn);
-	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh1P->SetCollisionResponseToAllChannels(ECR_Block);
-
-	GetMesh()->AttachParent = Mesh1P;
+	//GetMesh()->AttachParent = Mesh1P;
 	GetMesh()->bOnlyOwnerSee = false;
 	GetMesh()->bOwnerNoSee = true;
 	GetMesh()->bReceivesDecals = false;
@@ -41,9 +27,8 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Block);
-	GetMesh()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
-	GetMesh()->SetCollisionResponseToChannel(COLLISION_PICKUP, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	RootComponent = GetCapsuleComponent();
 
 	GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -52,7 +37,7 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	HeadshotBox = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("InstantKillBox"));
-	HeadshotBox->AttachParent = Mesh1P;
+	HeadshotBox->AttachParent = GetMesh();
 	HeadshotBox->SetBoxExtent(FVector(10.0f, 10.0f, 10.0f), false);
 	HeadshotBox->bHiddenInGame = true;
 	HeadshotBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -74,8 +59,6 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	//Inventory.AddZeroed(2);
-
 	//skill related stuff
 	iMaxEncumbranceLimit = 4;
 
@@ -88,11 +71,6 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	LockpickSkill = 0;
 	CombatSkill = 0;
 	SabotageSkill = 0;
-
-	//pistol skills
-	PistolSkill = 0;
-	AssaultSkill = 0;
-	MarksmanSkill = 0;
 
 	KnifeAnimationDuration = 0.0f;
 	GrenadeAnimationDuration = 0.0f;
@@ -133,7 +111,7 @@ void AFCCharacter::Destroyed()
 void AFCCharacter::PawnClientRestart() 
 {
 	Super::PawnClientRestart();
-	SetCurrentWeapon(CurrentWeapon);
+	//SetCurrentWeapon(CurrentWeapon);
 }
 
 void AFCCharacter::PossessedBy(class AController* InController) 
@@ -196,39 +174,9 @@ void AFCCharacter::OnCameraUpdate(const FVector& CameraLocation, const FRotator&
 	const FMatrix PitchedCameraLS = FRotationMatrix(RotCameraPitch) * LeveledCameraLS;
 	const FMatrix MeshRelativeToCamera = DefMeshLS * LeveledCameraLS.Inverse();
 	const FMatrix PitchedMesh = MeshRelativeToCamera * PitchedCameraLS;
-
-	Mesh1P->SetRelativeLocationAndRotation(PitchedMesh.GetOrigin(), PitchedMesh.Rotator());
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-// Damage & death
-void AFCCharacter::ThrowGrenade()
-{
-	HudRunoffTime = 6.0f;
-
-	if (GrenadeClass != NULL && GrenadesCarried > 0 && !bHasWeaponsHolstered) 
-	{
-		const FRotator SpawnRotation = GetAimOffsets();
-
-		const FVector DefaultGunOffset = FVector(100.0f, 30.0f, 10.0f);
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(DefaultGunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-			World->SpawnActor<AFifthColumnProjectile>(GrenadeClass, SpawnLocation, GetControlRotation()); //this lets the player throw the grenade
-
-		if (ThrowAnimation != NULL)
-		{
-			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-			if (AnimInstance != NULL)
-				AnimInstance->Montage_Play(ThrowAnimation, 1.f);
-		}
-
-		GrenadesCarried--;
-	}
-}
-
+//Damage & death
 void AFCCharacter::FellOutOfWorld(const class UDamageType& dmgType) 
 {
 	Die(Health, FDamageEvent(dmgType.GetClass()), NULL, NULL);
@@ -283,12 +231,8 @@ void AFCCharacter::AddHealth(float HealthAdd)
 		Health = GetMaxHealth();
 }
 
-void AFCCharacter::InduceDrugEffects(bool DrugPlayer)
+void AFCCharacter::ChangeModifiers()
 {
-	WithdrawalEffect = DrugPlayer;
-
-	if (!WithdrawalEffect)
-		TimeUntilWithdrawal = BaseTimeUntilWithdrawal;
 }
 
 float AFCCharacter::GetBaseTimeUntilWithdrawal() const 
@@ -313,17 +257,133 @@ float AFCCharacter::GetStamina() const
 
 void AFCCharacter::RestockAllAmmo()
 {
-	if (Inventory[0])
+	//TODO: Luck mechanics
+
+/*	if (Inventory[0])
 		Inventory[0]->GiveAmmo(Inventory[0]->GetMaxAmmo() - Inventory[0]->GetCurrentAmmo());
 
 	if (Inventory[1])
-		Inventory[1]->GiveAmmo(Inventory[1]->GetMaxAmmo() - Inventory[1]->GetCurrentAmmo());
+		Inventory[1]->GiveAmmo(Inventory[1]->GetMaxAmmo() - Inventory[1]->GetCurrentAmmo());*/
 }
 
 int32 AFCCharacter::GetMoney() const
 {
 	return Money;
 }
+
+//FACTIONS
+float AFCCharacter::GetDispositionTowardsCharacter(int32 choice) const
+{
+	switch (choice)
+	{
+	case 1:
+		return ArmenianFactionDisposition;
+	case 2:
+		return AzerbaijaniFactionDisposition;
+	case 3:
+		return SovietFactionDisposition;
+	case 4:
+		return MercenaryFactionDisposition;
+	case 5:
+		return SSFactionDisposition;
+	}
+
+	return 0;
+}
+
+void AFCCharacter::SetDispositionTowardsCharacter(int32 choice, float change, bool redistribute)
+{
+	switch (choice)
+	{
+	case 1:
+
+		if (!(ArmenianFactionDisposition <= 0))
+		{
+			ArmenianFactionDisposition += change;
+
+			if (ArmenianFactionDisposition >= 100)
+				ArmenianFactionDisposition = 100;
+		}
+		else
+			ArmenianFactionDisposition = 0;
+
+		if (redistribute)
+			Redistribute(choice, change);
+
+		return;
+	case 2:
+
+		if (!(AzerbaijaniFactionDisposition <= 0))
+		{
+			AzerbaijaniFactionDisposition += change;
+
+			if (AzerbaijaniFactionDisposition >= 100)
+				AzerbaijaniFactionDisposition = 100;
+		}
+		else
+			AzerbaijaniFactionDisposition = 0;
+
+		if (redistribute)
+			Redistribute(choice, change);
+
+		return;
+	case 3:
+		if (!(SovietFactionDisposition <= 0))
+		{
+			SovietFactionDisposition += change;
+
+			if (SovietFactionDisposition >= 100)
+				SovietFactionDisposition = 100;
+		}
+		else
+			SovietFactionDisposition = 0;
+
+		if (redistribute)
+			Redistribute(choice, change);
+
+		return;
+	case 4:
+		if (!(MercenaryFactionDisposition <= 0))
+		{
+			MercenaryFactionDisposition += change;
+
+			if (MercenaryFactionDisposition >= 100)
+				MercenaryFactionDisposition = 100;
+		}
+		else
+			MercenaryFactionDisposition = 0;
+
+		if (redistribute)
+			Redistribute(choice, change);
+
+		return;
+	case 5:
+		if (!(SSFactionDisposition <= 0))
+		{
+			SSFactionDisposition += change;
+
+			if (SSFactionDisposition >= 100)
+				SSFactionDisposition = 100;
+		}
+		else
+			SSFactionDisposition = 0;
+
+		if (redistribute)
+			Redistribute(choice, change);
+
+		return;
+	}
+}
+
+void AFCCharacter::Redistribute(int32 choice, int32 change)
+{
+	change = -change;
+
+	for (int32 i = 1; i <= 5; i++)
+	if (i != choice)
+		SetDispositionTowardsCharacter(i, change / 2, false);
+}
+
 
 bool AFCCharacter::CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const
 {
@@ -375,7 +435,7 @@ void AFCCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& Damag
 		GetMesh()->bHiddenInGame = true;
 	}
 
-	if (DeathSound && Mesh1P && Mesh1P->IsVisible())
+	if (DeathSound)
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 
 	// remove all weapons and items
@@ -383,8 +443,8 @@ void AFCCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& Damag
 
 	DetachFromControllerPendingDestroy();
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 
 	if (GetMesh())
 	{
@@ -482,13 +542,14 @@ void AFCCharacter::SetHeadsupName(FText Input)
 	HeadsupName = Input;
 }
 
+/*
 bool AFCCharacter::GetShowWeaponHUD() 
 {
 	if (HudRunoffTime > 0)
 		return true;
 	else
 		return false;
-}
+}*/
 
 bool AFCCharacter::GetHasWeaponsHolstered() const
 {
@@ -497,14 +558,9 @@ bool AFCCharacter::GetHasWeaponsHolstered() const
 
 void AFCCharacter::SpawnDefaultInventory() 
 {
-	if (DefaultGunSlot)
-		AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultGunSlot));
-
-	if (DefaultPistolSlot)
-		AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultPistolSlot));
 
 	for (int32 i = 0; i < DefaultInventoryObjects.Num(); i++)
-		AddWeapon(GetWorld()->SpawnActor<AInventoryItem>(DefaultInventoryObjects[i]));
+		AddWeapon(GetWorld()->SpawnActor<AFCWeapon>(DefaultInventoryObjects[i]));
 
 	// equip first weapon in inventory
 	if (Inventory.Num() > 0)
@@ -513,8 +569,10 @@ void AFCCharacter::SpawnDefaultInventory()
 
 void AFCCharacter::DestroyInventory()
 {
-	RemoveWeapon(Inventory[0]);
-	RemoveWeapon(Inventory[1]);
+	for (int32 i = 0; i < Inventory.Num(); i++)
+	{
+		RemoveWeapon(Inventory[i]);
+	}
 }
 
 bool AFCCharacter::AddWeapon(AFCWeapon* Weapon)
@@ -529,32 +587,12 @@ bool AFCCharacter::AddWeapon(AFCWeapon* Weapon)
 		Weapon->OnEnterInventory(this);
 
 		//Set Target Slot
-		if (WeaponType == 1 && PistolSkill >= 3 || WeaponType == 0)
+		for (int32 i = 2; i < Inventory.Num(); i++)
 		{
-			if (Inventory.Num() < 1)
-				Inventory.AddZeroed(1);
-			TargetSlot = Inventory[0];
-		}
-		else if (WeaponType != 4)
-		{
-			if (Inventory.Num() < 2)
-				Inventory.AddZeroed(2);
-			TargetSlot = Inventory[1];
-		}
-		else if (WeaponType == 4)
-		{
-			if (Inventory.Num() < 3)
-				Inventory.AddZeroed(3 - Inventory.Num());
-			else
+			if (Inventory[i] && Weapon->GetAbstractName() == Inventory[i]->GetAbstractName())
 			{
-				for (int32 i = 2; i < Inventory.Num(); i++)
-				{
-					if (Inventory[i] && AbstractName == Inventory[i]->GetAbstractName())
-					{
-						TargetSlot = Inventory[i];
-						break;
-					}
-				}
+				TargetSlot = Inventory[i];
+				break;
 			}
 		}
 
@@ -582,26 +620,11 @@ bool AFCCharacter::AddWeapon(AFCWeapon* Weapon)
 		}
 
 		if (!TargetSlot)
+		{
 			TargetSlot = Weapon;
-
-		if (WeaponType == 1 && PistolSkill >= 3 || Weapon->GetWeaponType() == 0) 
-		{
-			Inventory[0] = TargetSlot;
-
-			if (bReplaceWeapon)
-				SetCurrentWeapon(TargetSlot);
-		}
-		else if (WeaponType != 4) 
-		{
-			&AFCPlayerCharacter::ToggleHolster;
-
-			Inventory[1] = TargetSlot;
-
-			if (bReplaceWeapon)
-				SetCurrentWeapon(TargetSlot);
-		}
-		else
 			Inventory.Add(Weapon);
+			EquipWeapon(Weapon);
+		}
 		
 		return true;
 	}
@@ -619,10 +642,11 @@ void AFCCharacter::RemoveWeapon(AFCWeapon* Weapon)
 		Weapon->SetActorLocation(Location);
 		Weapon->Mesh3P->SetWorldLocation(Location);
 
+		/*
 		if (Inventory[1] == Weapon)
 			Inventory[1] = NULL;
 		else
-			Inventory[0] = NULL;
+			Inventory[0] = NULL;*/
 
 		GetWorldTimerManager().SetTimer(TimerHandle_LifeSpanExpired, Weapon, &AFCWeapon::RagdollPhysics, 0.05f, false);
 	}
@@ -630,8 +654,6 @@ void AFCCharacter::RemoveWeapon(AFCWeapon* Weapon)
 
 void AFCCharacter::EquipWeapon(AFCWeapon* Weapon)
 {
-	HudRunoffTime = 6.0f;
-
 	if (Weapon)
 	{
 		CurrentWeaponName = Weapon->GetName();
@@ -706,11 +728,6 @@ void AFCCharacter::UnEquipWeapon()
 }
 
 //Holstering
-void AFCCharacter::Holster()
-{
-	Mesh1P->SetHiddenInGame(true);
-}
-
 void AFCCharacter::EquipWeapon()
 {
 	CurrentWeapon = GlobalNewWeapon;
@@ -795,7 +812,7 @@ void AFCCharacter::SetTargeting(bool bNewTargeting)
 	bIsTargeting = bNewTargeting;
 
 	if (CanFire() && TargetingSound)
-			UGameplayStatics::PlaySoundAttached(TargetingSound, GetRootComponent());
+			UGameplayStatics::SpawnSoundAttached(TargetingSound, GetRootComponent());
 	else if (CanFire() && Role < ROLE_Authority)
 			SetTargeting(bNewTargeting);
 }
@@ -942,22 +959,24 @@ void AFCCharacter::OnStopTargeting()
 void AFCCharacter::ChangeWeapon() 
 {
 	APlayerController* MyPC = Cast<APlayerController>(Controller);
-	AFCWeapon* NextWeapon;
+	AFCWeapon* NextWeapon = NULL;
 
-	if (CurrentWeapon == Inventory[1])
-		NextWeapon = Inventory[0];
-	else
-		NextWeapon = Inventory[1];
-
-	if (NextWeapon && NextWeapon->GetCurrentAmmo() > 0)
-		EquipWeapon(NextWeapon);
+	for (int32 i = 1; i < Inventory.Num(); i++)
+	{
+		if (i >= 0 && Inventory[i]->GetWeaponType() != 4)
+		{
+			EquipWeapon(Inventory[i]);
+			NextWeapon = Inventory[i];
+		}
+	}
 }
 
+/*
 void AFCCharacter::NextItem() 
 {
-	if (bHasWeaponsHolstered) 
-	{
-		HudRunoffTime = 6.0f;
+	//if (bHasWeaponsHolstered) 
+	//{
+		//HUD->HudRunoffTime = 6.0f;
 		int32 ItemCount = Inventory.IndexOfByKey(CurrentWeapon) + 1;
 
 		if (CurrentWeapon && ItemCount < Inventory.Num())
@@ -971,16 +990,16 @@ void AFCCharacter::NextItem()
 			EquipWeapon(Inventory[0 % Inventory.Num()]);
 		else if (Inventory.Num() > 0)
 			EquipWeapon(Inventory[Inventory.Num() - 1]);
-	}
-	else
-		ChangeWeapon();
+	//}
+	//else
+	//	ChangeWeapon();
 }
 
 void AFCCharacter::PreviousItem() 
 {
-	if (bHasWeaponsHolstered) 
-	{
-		HudRunoffTime = 6.0f;
+	//if (bHasWeaponsHolstered) 
+	//{
+		//HudRunoffTime = 6.0f;
 		int32 ItemCount = Inventory.IndexOfByKey(CurrentWeapon) - 1;
 
 		if (CurrentWeapon && ItemCount > 0)
@@ -994,15 +1013,15 @@ void AFCCharacter::PreviousItem()
 			EquipWeapon(Inventory[Inventory.Num() - 1]);
 		else if (Inventory.Num() > 0)
 			EquipWeapon(Inventory[0 % Inventory.Num()]);
-	}
-	else
-		ChangeWeapon(); 
-}
+	//}
+	//else if (Inventory.Num() <= 2 && Inventory[1] != nullptr)
+	//	ChangeWeapon(); 
+}*/
 
 void AFCCharacter::OnReload() 
 {
 	APlayerController* MyPC = Cast<APlayerController>(Controller);
-	HudRunoffTime = 6.0f;
+	//HudRunoffTime = 6.0f;
 
 	if (CurrentWeapon)
 		CurrentWeapon->StartReload();
@@ -1055,10 +1074,6 @@ void AFCCharacter::Tick(float DeltaSeconds)
 	Cast<UFCCharacterMovement>(GetCharacterMovement())->HandleCrouching(DeltaSeconds);
 
 	if (bWantsToRunToggled && !IsRunning()) SetRunning(false, false);
-	if (HudRunoffTime > 0) HudRunoffTime -= 0.05f;
-
-	if (bHasWeaponsHolstered) Mesh1P->SetHiddenInGame(true);
-	else Mesh1P->SetHiddenInGame(false);
 }
 
 AFCWeapon* AFCCharacter::GetWeapon() const 
@@ -1076,7 +1091,7 @@ bool AFCCharacter::HasAnyItem()
 {
 	if (!CurrentWeapon)
 	{
-		NextItem();
+		//NextItem();
 		if (!CurrentWeapon)
 			return false;
 		else
@@ -1105,11 +1120,6 @@ AFCWeapon* AFCCharacter::GetInventoryWeapon(int32 index) const
 	else return Inventory[0];
 }
 
-USkeletalMeshComponent* AFCCharacter::GetPawnMesh() const 
-{
-	return IsFirstPerson() ? Mesh1P : GetMesh();
-}
-
 bool AFCCharacter::AddItem(AInventoryItem* Item) 
 {
 	for (int32 i = 0; i < Inventory.Num(); i++) 
@@ -1120,6 +1130,7 @@ bool AFCCharacter::AddItem(AInventoryItem* Item)
 	return true;
 }
 
+/*
 void AFCCharacter::SetGrenadesCarried(int32 iDesiredAmount) 
 {
 	if (iDesiredAmount <= MaxAmountGrenades)
@@ -1129,7 +1140,7 @@ void AFCCharacter::SetGrenadesCarried(int32 iDesiredAmount)
 int32 AFCCharacter::GetGrenadesCarried() const 
 {
 	return GrenadesCarried;
-}
+}*/
 
 FName AFCCharacter::GetWeaponAttachPoint() const
 {

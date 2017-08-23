@@ -11,7 +11,7 @@
  * Main Menu (yes)
  * Health bar (partially, there is health indication)
 -Inventory System (yes)
- * Gunslots (yes)
+ * Gunslots (removed due to design concerns)
  * Non-Weapon Items (yes)
  * Inventory management (yes)
  * Pickups (yes)
@@ -30,13 +30,12 @@
 - AI (not complete) - 0.7
  * Attacks hostiles (yes)
  * Moves to hostiles (no) - 0.7
- * Identifies hostiles (yes)
+ * Identifies hostiles (provisional working system)
  * Changing Faction disposition (yes)
  * AI states - i.e. patrol, attack (yes)
  * Aiming offset (yes)
- * Group AI (no) - 0.7
- * Make the AI stop for a conversation (no) - 0.7
- * Keyring (no) - 0.7
+ * Group AI (no)
+ * Make the AI stop for a conversation (no)
  * Stealth mechanics (no)
    * Hearing mechanics (yes)
    * Viewing cone (yes)
@@ -54,8 +53,8 @@
  * Remember current world variables (yes)
    * Faction rating (yes)
 - Adding an options menu (no) - 0.5
- * Graphics options (no)
-  * Aspect Ratio (no)
+ * Graphics options (WIP)
+  * Aspect Ratio (WIP)
   * Resolution (yes)
   * FullScreen/Windowed (yes)
   * VSync (yes)
@@ -93,9 +92,10 @@
   * Base FOV (no)
 - Third person animations (Yes)
 - Loading screens (yes)
-- Headshot one-shot one-kill (no) - 0.0.5
-- Optional Crosshair (no) - 0.1.0
-- Make UI gamepad controllable (no) - 0.5
+- Headshot one-shot one-kill (no)
+- Optional Crosshair (no)
+ * UI Hand (no)
+- Make UI gamepad controllable (no)
  * Journal (no)
    * General journal screen (yes)
    * Skills (yes)
@@ -116,26 +116,26 @@
    * StG 44 (yes)
    * Sterling (yes)
    * Gewehr 43 (no)
-- Load/Save Game (no) - 0.9
-- Different game modes (no) - 0.7
+- Load/Save Game (no)
+- Different game modes (no)
  * Fifth Column mode (yes)
  * Story mode (no)
  * Tony Montana mode (no)
  * Ultraviolence mode (no)
  * Undercover mode (no)
-- Gas grenades (no) - 0.7
-- Prevent sticking weapons into walls (no) - 0.7
+- Gas grenades (no)
+- Prevent sticking weapons into walls (no)
 - Overhaul of the inventory pickup system (yes)
-- Adjusting the camera (no) - Alpha 0.7
+- Adjusting the camera (no)
  * Account for changes in screen ratio (no)
  * Camera falls if player dies (no)
-- Money (no) - 0.7
-- Upgrade weapons (no) - 0.7
+- Money (no)
+- Upgrade weapons (no longer planned due to design concerns)
 - Notifications (yes)
 - Variable impact effects (yes)
 - Blood effects (yes)
 - Poster system (yes)
-- The Elder Scrolls style headsup text to show which item you are about to pick up (yes)
+- TES style headsup text to show which item you are about to pick up (yes)
 - Falling damage (yes)
 - Ammo box (yes)
 - Withdrawal effects (yes)

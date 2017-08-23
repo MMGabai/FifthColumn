@@ -17,7 +17,7 @@ void ANPC::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AFCGameMode* GameMode = Cast<AFCGameMode>(GetWorld()->GetAuthGameMode());
-	float EnemyHealthOffset;
+	float EnemyHealthOffset = 0.0f;
 	GameMode ? EnemyHealthOffset = GameMode->GetEnemyHealthOffset() : 0.0f;
 	
 	Role == ROLE_Authority && EnemyHealthOffset != NULL ? MaxHealth *= EnemyHealthOffset : NULL;
@@ -35,7 +35,7 @@ bool ANPC::GetHostileToPlayer() const
 
 void ANPC::SetStartingDialogue(ADialogue* NewStartingDialogue)
 {
-
+	//NewStartingDialogue->SubTSubclassOf<ADialogue*>;
 }
 
 void ANPC::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
@@ -46,10 +46,11 @@ void ANPC::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, 
 	//Give XP to the killer
 	if (PlayerController)
 	{
-		Cast<AFCPlayerCharacter>(PlayerController->GetCharacter())->AddXP(XPOnKill);
+		AFCPlayerCharacter* Player = Cast<AFCPlayerCharacter>(PlayerController->GetCharacter());
+		Player->AddXP(XPOnKill);
 
 		if (GetWorld()->GetFirstPlayerController()->GetPawn() == DamageCauser->GetInstigatorController()->GetPawn())
-			PlayerController->SetDispositionTowardsPlayer(FactionID, -5, true);
+			Player->SetDispositionTowardsCharacter(FactionID, -5);
 	}
 }
 
@@ -70,21 +71,26 @@ bool ANPC::IsEnemyFor(AController* TestPC) const
 
 	APlayerState* TestPlayerState = Cast<APlayerState>(TestPC->PlayerState);
 	APlayerState* MyPlayerState = Cast<APlayerState>(PlayerState);
+	AFCAIController* AIController = Cast<AFCAIController>(TestPC);
 	AFCPlayerCharacter* TestCharacter = Cast<AFCPlayerCharacter>(TestPC->GetPawn());
-	AFCPlayerController* TestController = Cast<AFCPlayerController>(TestPC);
+
+	float FactionDisposition;
 
 	bool bReturnBool = false;
 
-	if (TestController)
+	//One for the player
+	if (TestCharacter)
 	{
-		float FactionDisposition = TestController->GetDispositionTowardsPlayer(FactionID);
+		FactionDisposition = TestCharacter->GetDispositionTowardsCharacter(FactionID);
 
 		bReturnBool = (FactionDisposition < 40 || TestCharacter && TestCharacter->GetHasWeaponsHolstered() == false &&
 			FactionDisposition < 60 || TestCharacter && TestCharacter->GetIsTrespassing() == true && FactionDisposition < 80);
 	}
-
-	if (GetWorld()->GetFirstPlayerController() != TestPC && FactionID != NULL && TestPC != NULL)
-		bReturnBool = (FactionID != Cast<ANPC>(TestPC->GetPawn())->FactionID && FactionID != 0);
+	else if (AIController)
+	{
+		if (FactionID != Cast<ANPC>(TestPC->GetPawn())->FactionID && FactionID != 0)
+			bReturnBool = true;
+	}
 
 	return bReturnBool;
 }
