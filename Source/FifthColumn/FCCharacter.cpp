@@ -1,7 +1,7 @@
-//Copyright (c) 2016, Mordechai M. Gabai
-
-#pragma once
+//Copyright (c) 2017, Mordechai M. Gabai
 #include "FifthColumn.h"
+#include "FCCharacter.h"
+#include "FCPlayerCameraManager.h"
 
 AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UFCCharacterMovement>(ACharacter::CharacterMovementComponentName)) 
 {	
@@ -36,7 +36,7 @@ AFCCharacter::AFCCharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
-	HeadshotBox = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("InstantKillBox"));
+	HeadshotBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InstantKillBox"));
 	HeadshotBox->AttachParent = GetMesh();
 	HeadshotBox->SetBoxExtent(FVector(10.0f, 10.0f, 10.0f), false);
 	HeadshotBox->bHiddenInGame = true;
@@ -150,18 +150,13 @@ void AFCCharacter::OnCameraUpdate(const FVector& CameraLocation, const FRotator&
 
 	if (CurrentWeapon)
 	{
-		if (!IsTargeting())
-			WeaponCameraSettings = CurrentWeapon->GetWeaponCameraSettings();
-		else
-			WeaponCameraSettings = CurrentWeapon->GetWeaponIronSightCameraSettings();
+		WeaponCameraSettings = CurrentWeapon->GetWeaponCameraSettings();
 	}
 	else
 		WeaponCameraSettings = FVector::ZeroVector;
 
-	if (bIsTargeting)
-		WeaponCameraSettings += FVector(IronSightCameraSettings.X, IronSightCameraSettings.Y, IronSightCameraSettings.Z);
-	else 
-		WeaponCameraSettings += FVector(CameraSettings.X + (WideScreenValue / 24.0f), CameraSettings.Y, CameraSettings.Z);
+
+	WeaponCameraSettings += FVector(CameraSettings.X + (WideScreenValue / 24.0f), CameraSettings.Y, CameraSettings.Z);
 
 	DefMeshLS = FRotationTranslationMatrix(DefMesh1P->RelativeRotation, DefMesh1P->RelativeLocation + WeaponCameraSettings);
 	const FMatrix LocalToWorld = ActorToWorld().ToMatrixWithScale();
@@ -408,11 +403,20 @@ bool AFCCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent, ACo
 
 	AController* const KilledPlayer = (Controller != NULL) ? Controller : Cast<AController>(GetOwner());
 
-	NetUpdateFrequency = GetDefault<AFCCharacter>()->NetUpdateFrequency;
-	GetCharacterMovement()->ForceReplicationUpdate();
+	//NetUpdateFrequency = GetDefault<AFCCharacter>()->NetUpdateFrequency;
+	//GetCharacterMovement()->ForceReplicationUpdate();
 
 	OnDeath(KillingDamage, DamageEvent, Killer ? Killer->GetPawn() : NULL, DamageCauser);
 	return true;
+}
+
+void AFCCharacter::SimplyDie()
+{
+	//create fictional damage event
+	Health = FMath::Min(0.0f, Health);
+	FDamageEvent FDecoyDamage = FDamageEvent::FDamageEvent();
+
+	OnDeath(200.0f, FDecoyDamage, NULL, NULL);
 }
 
 void AFCCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
@@ -461,8 +465,7 @@ void AFCCharacter::PlayHit(float DamageTaken, struct FDamageEvent const& DamageE
 {
 	ReplicateHit(DamageTaken, DamageEvent, PawnInstigator, DamageCauser, false);
 
-	APlayerController* PC = Cast<APlayerController>(Controller);
-	if (PC && DamageEvent.DamageTypeClass)
+	if (DamageEvent.DamageTypeClass)
 		UDamageType *DamageType = Cast<UDamageType>(DamageEvent.DamageTypeClass->GetDefaultObject());
 
 	if (DamageTaken > 0.f) 

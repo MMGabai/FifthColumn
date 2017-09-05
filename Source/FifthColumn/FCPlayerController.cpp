@@ -3,6 +3,7 @@
 #pragma once
 
 #include "FifthColumn.h"
+#include "FCPlayerCameraManager.h"
 
 AFCPlayerController::AFCPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) 
 {

@@ -1,11 +1,11 @@
-//Copyright (c) 2016, Mordechai M. Gabai
-
-#pragma once
+//Copyright (c) 2017, Mordechai M. Gabai
 #include "FifthColumn.h"
+#include "NPC.h"
 
-ANPC::ANPC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) 
+ANPC::ANPC(const FObjectInitializer& ObjectInitializer) :
+Super(ObjectInitializer.SetDefaultSubobjectClass<UFCCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
-	FactionID = 0; //1 is Pro-Armenian, 2 is Pro-Azerbaijani, 3 is Pro-Soviet, 0 is generic
+	FactionID = 0; //5 is Pro-German, 1 is Pro-Armenian, 2 is Pro-Azerbaijani, 3 is Pro-Soviet, 4 is mercenary, 0 is generic
 
 	bUnlimitedClips = true;
 	bUseControllerRotationYaw = true;
@@ -41,16 +41,20 @@ void ANPC::SetStartingDialogue(ADialogue* NewStartingDialogue)
 void ANPC::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
 {
 	Super::OnDeath(KillingDamage, DamageEvent, PawnInstigator, DamageCauser);
-	AFCPlayerController* PlayerController = Cast<AFCPlayerController>(DamageCauser->GetInstigatorController());
 
-	//Give XP to the killer
-	if (PlayerController)
+	if (DamageCauser)
 	{
-		AFCPlayerCharacter* Player = Cast<AFCPlayerCharacter>(PlayerController->GetCharacter());
-		Player->AddXP(XPOnKill);
+		AFCPlayerController* PlayerController = Cast<AFCPlayerController>(DamageCauser->GetInstigatorController());
 
-		if (GetWorld()->GetFirstPlayerController()->GetPawn() == DamageCauser->GetInstigatorController()->GetPawn())
-			Player->SetDispositionTowardsCharacter(FactionID, -5);
+		//Give XP to the killer
+		if (PlayerController)
+		{
+			AFCPlayerCharacter* Player = Cast<AFCPlayerCharacter>(PlayerController->GetCharacter());
+			Player->AddXP(XPOnKill);
+
+			if (GetWorld()->GetFirstPlayerController()->GetPawn() == DamageCauser->GetInstigatorController()->GetPawn())
+				Player->SetDispositionTowardsCharacter(FactionID, -5);
+		}
 	}
 }
 

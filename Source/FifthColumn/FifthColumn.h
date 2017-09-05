@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #ifndef __FIFTHCOLUMN_H__
 #define __FIFTHCOLUMN_H__
@@ -13,7 +13,6 @@
 #include "FCCharacterMovement.h"
 #include "InventoryItem.h"
 #include "FCPlayerCharacter.h"
-#include "FCPlayerCameraManager.h"
 #include "FCPlayerController.h"
 #include "ImpactEffect.h"
 #include "FCWeapon.h"

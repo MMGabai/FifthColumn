@@ -1,8 +1,7 @@
-//Copyright (c) 2016, Mordechai M. Gabai
-
-#pragma once
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #include "FifthColumn.h"
+#include "FCPlayerCameraManager.h"
 
 AFCPlayerCameraManager::AFCPlayerCameraManager(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

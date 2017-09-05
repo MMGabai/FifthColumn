@@ -12,6 +12,7 @@ class FIFTHCOLUMN_API AFCCharacter : public ACharacter
 {
 	GENERATED_UCLASS_BODY()
 
+public:
 	//everything through the headshot box will become instant lethal upon hitting the character
 	UPROPERTY(VisibleDefaultsOnly, Category = Gameplay)
 		UBoxComponent* HeadshotBox;
@@ -492,6 +493,9 @@ public:
 	//Kills pawn
 	UFUNCTION(BlueprintCallable, Category = Health)
 		virtual bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
+
+	UFUNCTION(BlueprintCallable, Category = Health)
+		virtual void SimplyDie();
 
 	// Die when we fall out of the world.
 	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;

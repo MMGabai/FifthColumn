@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #pragma once
 
@@ -7,7 +7,9 @@
 UCLASS(abstract, Blueprintable)
 class FIFTHCOLUMN_API AFifthColumnProjectile : public AActor
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+public:
+	AFifthColumnProjectile();
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
 		USphereComponent* CollisionComp;
@@ -16,6 +18,6 @@ class FIFTHCOLUMN_API AFifthColumnProjectile : public AActor
 		UProjectileMovementComponent* ProjectileMovement;
 
 	UFUNCTION()
-	void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
 

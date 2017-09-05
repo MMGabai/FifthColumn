@@ -10,9 +10,15 @@ UCLASS()
 class FIFTHCOLUMN_API ADialogue : public AActor
 {
 	GENERATED_UCLASS_BODY()
-
+public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 		FText GetDialogueName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+		void SetCharacter(ANPC* SpeakingCharacter);
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
+		ANPC* GetCharacter() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 		FString GetAbstractDialogueName() const;
@@ -65,6 +71,8 @@ class FIFTHCOLUMN_API ADialogue : public AActor
 	//	bool Success(AFCCharacter* OpeningCharacter, AFCCharacter* DialoguePartner);
 
 protected:
+
+	ANPC* Character;
 
 	//DialogueOptions
 	UPROPERTY(Transient)

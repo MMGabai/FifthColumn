@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 
 #pragma once
@@ -62,7 +62,9 @@ struct FWeaponData
 UCLASS(abstract, Blueprintable)
 class FIFTHCOLUMN_API AFCWeapon : public AFCObject
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+public:
+	AFCWeapon();
 
 	virtual void BeginPlay() override;
 
@@ -226,7 +228,6 @@ class FIFTHCOLUMN_API AFCWeapon : public AFCObject
 	virtual void SetLocation(const FVector Location);
 
 	FVector GetWeaponCameraSettings() const;
-	FVector GetWeaponIronSightCameraSettings() const;
 
 	void RagdollPhysics();
 
@@ -411,9 +412,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Camera)
 		FVector WeaponCameraSettings;
-
-	UPROPERTY(EditDefaultsOnly, Category = Camera)
-		FVector IronSightWeaponCameraSettings;
 
 	//REPLICATION
 	UFUNCTION()

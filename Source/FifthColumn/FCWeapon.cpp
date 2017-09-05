@@ -1,13 +1,13 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #pragma once
 
 #include "FifthColumn.h"
 #include "Particles/ParticleSystemComponent.h"
 
-AFCWeapon::AFCWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) 
+AFCWeapon::AFCWeapon() 
 {
-	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh1P"));
+	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh1P"));
 	Mesh1P->SetSimulatePhysics(false);
 	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh1P->bChartDistanceFactor = false;
@@ -24,7 +24,6 @@ AFCWeapon::AFCWeapon(const FObjectInitializer& ObjectInitializer) : Super(Object
 	//Mesh3P->AttachParent = Mesh1P;
 
 	WeaponCameraSettings = FVector(0.0f, 0.0f, 9.0f);
-	IronSightWeaponCameraSettings = FVector(0.0f, 0.0f, 9.0f);
 
 	bLoopedMuzzleFX = false;
 	bIsAutomatic = false;
@@ -485,11 +484,6 @@ UAudioComponent* AFCWeapon::PlayWeaponSound(USoundCue* Sound)
 FVector AFCWeapon::GetWeaponCameraSettings() const
 {
 	return WeaponCameraSettings;
-}
-
-FVector AFCWeapon::GetWeaponIronSightCameraSettings() const 
-{
-	return IronSightWeaponCameraSettings;
 }
 
 FVector AFCWeapon::GetCameraAim() const 

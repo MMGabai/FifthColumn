@@ -17,9 +17,20 @@ ADialogue::ADialogue(const FObjectInitializer& ObjectInitializer) : Super(Object
 	DialogueOptions.AddZeroed(5);
 }
 
+
 FText ADialogue::GetDialogueName() const 
 {
 	return DialogueOptionName;
+}
+
+void ADialogue::SetCharacter(ANPC* SpeakingCharacter)
+{
+	Character = SpeakingCharacter;
+}
+
+ANPC* ADialogue::GetCharacter() const
+{
+	return Character;
 }
 
 FString ADialogue::GetAbstractDialogueName() const 

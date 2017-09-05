@@ -1,4 +1,5 @@
 //Copyright (c) 2016, Mordechai M. Gabai
+#pragma once
 
 #include "FifthColumn.h"
 #include "NPC.generated.h"
@@ -14,6 +15,10 @@ class FIFTHCOLUMN_API ANPC : public AFCCharacter
 	UPROPERTY(EditAnywhere, Category = Behavior)
 		UBehaviorTree* NPCBehavior;
 
+	UPROPERTY(EditAnywhere, Category = Dialogue)
+		TSubclassOf<class ADialogue> StartingDialogue;
+
+public:
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		int32 GetFaction() const;
 
@@ -23,19 +28,14 @@ class FIFTHCOLUMN_API ANPC : public AFCCharacter
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		void SetStartingDialogue(ADialogue* NewStartingDialogue);
 
-	UPROPERTY(EditAnywhere, Category = Dialogue)
-		TSubclassOf<class ADialogue> StartingDialogue;
-
-	//Check if pawn is enemy if given controller
-	bool IsEnemyFor(AController* TestPC) const;
-
-public:
-
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		void SetHostileToPlayer(bool hostile = true);
 
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 		bool GetHostileToPlayer() const;
+
+	//Check if pawn is enemy if given controller
+	bool IsEnemyFor(AController* TestPC) const;
 
 	//notification when killed
 	virtual void OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* InstigatingPawn, class AActor* DamageCauser) override;

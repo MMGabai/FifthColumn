@@ -1,10 +1,9 @@
-//Copyright (c) 2016, Mordechai M. Gabai
-
-#pragma once
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #include "FifthColumn.h"
+#include "FCWeapon_Instant.h"
 
-AFCWeapon_Instant::AFCWeapon_Instant(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) 
+AFCWeapon_Instant::AFCWeapon_Instant() 
 {
 	CurrentFiringSpread = 0.0f;
 }
@@ -28,7 +27,7 @@ void AFCWeapon_Instant::FireWeapon()
 	CurrentFiringSpread = FMath::Min(InstantConfig.FiringSpreadMax, CurrentFiringSpread + InstantConfig.FiringSpreadIncrement);
 }
 
-void AFCWeapon_Instant::NotifyHit(const FHitResult Impact, FVector_NetQuantizeNormal ShootDir, int32 RandomSeed, float ReticleSpread) 
+void AFCWeapon_Instant::NotifyHit(const FHitResult Impact, FVector_NetQuantizeNormal ShootDir, int32 RandomSeed, float ReticleSpread)
 {
 	const float WeaponAngleDot = FMath::Abs(FMath::Sin(ReticleSpread * PI / 180.f));
 

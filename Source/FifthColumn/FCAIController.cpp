@@ -3,6 +3,7 @@
 #pragma once
 
 #include "FifthColumn.h"
+#include "FCAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 AFCAIController::AFCAIController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) 
@@ -158,7 +159,7 @@ void AFCAIController::ListenToDisturbances()
 
 		for (int32 i = 0; i < GetLevel()->Actors.Num(); i++) 
 		{
-			ADisturbanceSource* Sound = Cast<ADisturbanceSource>(It[i]);
+			ADisturbanceSource* Sound = Cast<ADisturbanceSource>(It[i]); //TODO: Replace disturbance source by noise emitter
 
 			if (Sound)
 			{

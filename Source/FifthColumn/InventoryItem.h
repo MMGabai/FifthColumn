@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #pragma once
 
@@ -9,11 +9,12 @@
 UCLASS(abstract)
 class FIFTHCOLUMN_API AInventoryItem : public AFCWeapon
 {
-	GENERATED_UCLASS_BODY()
-
-	virtual void GiveAmmo(int AddAmount) override;
+	GENERATED_BODY()
 
 public:
+	AInventoryItem();
+
+	virtual void GiveAmmo(int AddAmount) override;
 
 	virtual bool CanBePickedUp(class AFCCharacter* TestPawn) const;
 

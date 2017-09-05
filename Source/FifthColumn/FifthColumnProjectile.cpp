@@ -1,18 +1,17 @@
-//Copyright (c) 2016, Mordechai M. Gabai
-
-#pragma once
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #include "FifthColumn.h"
+#include "FifthColumnProjectile.h"
 
-AFifthColumnProjectile::AFifthColumnProjectile(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+AFifthColumnProjectile::AFifthColumnProjectile()
 {
-	CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("SphereComp"));
+	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(5.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");		// Collision profiles are defined in DefaultEngine.ini
 	CollisionComp->OnComponentHit.AddDynamic(this, &AFifthColumnProjectile::OnHit);		// set up a notification for when this component overlaps something
 	RootComponent = CollisionComp;
 
-	ProjectileMovement = ObjectInitializer.CreateDefaultSubobject<UProjectileMovementComponent>(this, TEXT("ProjectileComp"));
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = CollisionComp;
 	ProjectileMovement->InitialSpeed = 30000.f;
 	ProjectileMovement->MaxSpeed = 30000.f;

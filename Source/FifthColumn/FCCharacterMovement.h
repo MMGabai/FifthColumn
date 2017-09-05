@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 #pragma once
 #include "FCCharacterMovement.generated.h"
 
@@ -6,7 +6,7 @@ UCLASS()
 class FIFTHCOLUMN_API UFCCharacterMovement : public UCharacterMovementComponent
 {
 	GENERATED_UCLASS_BODY()
-
+public:
 	virtual float GetMaxSpeed() const override;
 
 	virtual void Crouch(bool bClientSimulation = false) override;

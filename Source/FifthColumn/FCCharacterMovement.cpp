@@ -1,8 +1,9 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #pragma once
 
 #include "FifthColumn.h"
+#include "FCCharacterMovement.h"
 
 UFCCharacterMovement::UFCCharacterMovement(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
