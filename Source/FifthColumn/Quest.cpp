@@ -35,6 +35,8 @@ void AQuest::QuestStarted(AFCPlayerCharacter* Player)
 {
 	SetOwner(Player);
 
+	Player->SendNotification(FText::FromString("You have updated your journal."));
+
 	if (Player)
 	{
 		Player->ActiveQuests.Add(this);
@@ -55,6 +57,8 @@ void AQuest::QuestFinished(AFCPlayerCharacter* Player)
 		Player->AddXP(XPtoAddOnCompletion);
 		Player->ActiveQuests.Remove(this);
 	}
+
+	Player->SendNotification(FText::FromString("You have updated your journal."));
 
 	Player->SelectNextQuest();
 }

@@ -21,8 +21,6 @@ AFCWeapon::AFCWeapon()
 	Mesh1P->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 	Mesh1P->AttachParent = Mesh3P;
 
-	//Mesh3P->AttachParent = Mesh1P;
-
 	WeaponCameraSettings = FVector(0.0f, 0.0f, 9.0f);
 
 	bLoopedMuzzleFX = false;
@@ -103,7 +101,6 @@ void AFCWeapon::PickupOnTouch(class AFCPlayerCharacter* Pawn)
 
 void AFCWeapon::OnPickedUp()
 {
-	//CollisionComp->Deactivate();
 	Mesh3P->Deactivate();
 	DetachMeshFromPawn();
 

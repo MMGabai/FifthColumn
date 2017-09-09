@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai Gabai
+//Copyright (c) 2017, Mordechai Gabai
 
 #pragma once
 
@@ -35,6 +35,7 @@ ANPC* ADialogue::GetCharacter() const
 
 FString ADialogue::GetAbstractDialogueName() const 
 {
+	//return GetHumanReadableName(); experimental
 	return AbstractDialogueName;
 }
 
@@ -48,9 +49,9 @@ bool ADialogue::GetAvailable() const
 	return bAvailable;
 }
 
-void ADialogue::ToggleAvailability()
+void ADialogue::ToggleAvailability(bool Toggle)
 {
-	bOneTimeOnly && bAvailable ? bAvailable = false : NULL;
+	bAvailable = Toggle;
 }
 
 bool ADialogue::GetSpeechCheck() const

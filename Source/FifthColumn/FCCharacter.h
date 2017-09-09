@@ -57,7 +57,7 @@ public:
 
 	//check whether player owns the item of the parameter
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-		bool HasItem(AInventoryItem* Item);
+		bool HasItem(FString Item);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 		bool CheckHolstering();

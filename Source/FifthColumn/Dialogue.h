@@ -1,4 +1,4 @@
-//Copyright (c) 2016, Mordechai M. Gabai
+//Copyright (c) 2017, Mordechai M. Gabai
 
 #pragma once
 
@@ -30,7 +30,7 @@ public:
 		bool GetAvailable() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
-		void ToggleAvailability();
+		void ToggleAvailability(bool Toggle = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 		bool GetSpeechCheck() const;

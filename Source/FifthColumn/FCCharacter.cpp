@@ -1104,9 +1104,13 @@ bool AFCCharacter::HasAnyItem()
 		return true; 
 }
 
-bool AFCCharacter::HasItem(AInventoryItem* Item) 
+bool AFCCharacter::HasItem(FString Item)
 {
-	if (Item && Inventory.Contains(Item)) return true;
+	for (int32 i = 0; i < Inventory.Num(); i++)
+	{
+		if (Inventory[i]->GetAbstractName() == Item)
+			return true;
+	}
 
 	return false; 
 }
