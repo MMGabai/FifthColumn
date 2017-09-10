@@ -62,10 +62,6 @@
 		}
 	],
 	"TargetPlatforms": [
-		"LinuxNoEditor",
-		"WindowsNoEditor",
-		"MacNoEditor",
-		"XboxOne",
-		"PS4"
+		"WindowsNoEditor"
 	]
 }
