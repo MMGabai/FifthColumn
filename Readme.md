@@ -1,3 +1,5 @@
+(Please note: Links are currently offline until further notice!)
+
 -For the playable version:
 
 -https://intern.mordechai.nl/s/cWGbgtHbe1NkvCR
@@ -10,7 +12,8 @@
 
 -https://mordechai.nl/s/Qv2J7QWQhXlL2A8
  
- 
+-- LEGAL --
+
 Fifth Column uses the Unreal® Engine. Unreal® is a trademark or registered trademark of Epic Games, Inc. in the United States of America and elsewhere.
 Unreal® Engine, Copyright 1998 – 2017, Epic Games, Inc. All rights reserved.
 
